@@ -2,7 +2,7 @@ import SiteMenuView from './view/site-menu.js';
 import FilterView from './view/filter.js';
 import BoardView from './view/board.js';
 import SortView from './view/sort.js';
-import TasksListView from './view/tasks-list.js';
+import TaskListView from './view/task-list.js';
 import TaskView from './view/task.js';
 import TaskEditView from './view/task-edit.js';
 import LoadMoreButtonView from './view/load-more-button.js';
@@ -20,16 +20,16 @@ const filters = generateFilter(tasks);
 const siteMainElement = document.querySelector(`.main`);
 const headerContainer = siteMainElement.querySelector(`.main__control`);
 
-const renderTask = (tasksListElement, task) => {
+const renderTask = (taskListElement, task) => {
   const taskComponent = new TaskView(task);
   const taskEditComponent = new TaskEditView(task);
 
   const replaceCardToForm = () => {
-    tasksListElement.replaceChild(taskEditComponent.getElement(), taskComponent.getElement());
+    taskListElement.replaceChild(taskEditComponent.getElement(), taskComponent.getElement());
   };
 
   const replaceFormToCard = () => {
-    tasksListElement.replaceChild(taskComponent.getElement(), taskEditComponent.getElement());
+    taskListElement.replaceChild(taskComponent.getElement(), taskEditComponent.getElement());
   };
 
   const onEscKeyPress = (evt) => {
@@ -51,7 +51,7 @@ const renderTask = (tasksListElement, task) => {
     document.removeEventListener(`keydown`, onEscKeyPress);
   });
 
-  render(tasksListElement, taskComponent.getElement(), RenderPosition.BEFOREEND);
+  render(taskListElement, taskComponent.getElement(), RenderPosition.BEFOREEND);
 };
 
 const renderBoard = (boardContainer, boardTasks) => {
@@ -97,4 +97,5 @@ const renderBoard = (boardContainer, boardTasks) => {
 render(headerContainer, new SiteMenuView().getElement(), RenderPosition.BEFOREEND);
 render(siteMainElement, new FilterView(filters).getElement(), RenderPosition.BEFOREEND);
 renderBoard(siteMainElement, tasks);
+
 

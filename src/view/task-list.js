@@ -1,6 +1,6 @@
 import {createElement} from '../utils.js';
 
-const createTasksListTemplate = () => {
+const createTaskListTemplate = () => {
   return (
     `<div class="board__tasks"></div>`
   );
@@ -12,7 +12,7 @@ export default class TasksList {
   }
 
   getTemplate() {
-    return createTasksListTemplate();
+    return createTaskListTemplate();
   }
 
   getElement() {
