@@ -171,6 +171,11 @@ body {
   text-align: center;
   text-transform: uppercase;
 }
+
+.board__filter--active {
+  font-weight: bold;
+}
+
 .load-more {
   width: 100%;
   padding: 15px 0;

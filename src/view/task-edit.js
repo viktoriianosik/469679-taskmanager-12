@@ -3,6 +3,7 @@ import {isTaskRepeating, formatTaskDueDate} from "../utils/task.js";
 import SmartView from './smart.js';
 import flatpickr from 'flatpickr';
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
+import he from 'he';
 
 const BLANK_TASK = {
   color: COLORS[0],
@@ -100,7 +101,7 @@ const createTaskEditTemplate = (data) => {
                 class="card__text"
                 placeholder="Start typing your text here..."
                 name="text"
-              >${description}</textarea>
+              >${he.encode(description)}</textarea>
             </label>
           </div>
 
@@ -143,8 +144,18 @@ export default class TaskEdit extends SmartView {
     this._repeatingToggleHandler = this._repeatingToggleHandler.bind(this);
     this._repeatingChangeHandler = this._repeatingChangeHandler.bind(this);
     this._dueDateChangeHandler = this._dueDateChangeHandler.bind(this);
+    this._formDeleteClickHandlers = this._formDeleteClickHandlers.bind(this);
     this._setInnerHandlers();
     this._setDatepicker();
+  }
+
+  removeElement() {
+    super.removeElement();
+
+    if (this._datepicker) {
+      this._datepicker.destroy();
+      this._datepicker = null;
+    }
   }
 
   getTemplate() {
@@ -200,6 +211,7 @@ export default class TaskEdit extends SmartView {
     this._setInnerHandlers();
     this._setDatepicker();
     this.setFormSubmitHandler(this._callback.formSubmit);
+    this.setFormDeleteClickHandlers(this._callback.deleteClick);
   }
 
   _dueDateChangeHandler([userDate]) {
@@ -240,6 +252,16 @@ export default class TaskEdit extends SmartView {
   setFormSubmitHandler(callback) {
     this._callback.formSubmit = callback;
     this.getElement().querySelector(`form`).addEventListener(`submit`, this._formSubmitHandler);
+  }
+
+  _formDeleteClickHandlers(evt) {
+    evt.preventDefault();
+    this._callback.deleteClick(TaskEdit.parseDataToTask(this._data));
+  }
+
+  setFormDeleteClickHandlers(callback) {
+    this._callback.deleteClick = callback;
+    this.getElement().querySelector(`.card__delete`).addEventListener(`click`, this._formDeleteClickHandlers);
   }
 
   reset(task) {

@@ -1,6 +1,8 @@
 import TaskView from "../view/task.js";
 import TaskEditView from "../view/task-edit.js";
 import {render, RenderPosition, replace, remove} from "../utils/render.js";
+import {UserAction, UpdateType} from '../const.js';
+import {isDateEqual, isTaskRepeating} from '../utils/task.js';
 
 const Mode = {
   DEFAULT: `DEFAULT`,
@@ -23,6 +25,7 @@ export default class Task {
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
     this._handleArchiveClick = this._handleArchiveClick.bind(this);
     this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
+    this._handleDeleteClick = this._handleDeleteClick.bind(this);
   }
 
   init(task) {
@@ -37,6 +40,7 @@ export default class Task {
     this._taskComponent.setFavoriteClickHandler(this._handleFavoriteClick);
     this._taskComponent.setArchiveClickHandler(this._handleArchiveClick);
     this._taskEditComponent.setFormSubmitHandler(this._handleFormSubmit);
+    this._taskEditComponent.setFormDeleteClickHandlers(this._handleDeleteClick);
 
     if (prevTaskComponent === null || prevTaskEditComponent === null) {
       render(this._taskListComponent, this._taskComponent, RenderPosition.BEFOREEND);
@@ -91,16 +95,52 @@ export default class Task {
     this._replaceCardToForm();
   }
 
-  _handleFormSubmit(task) {
-    this._changeData(task);
+  _handleFormSubmit(update) {
+    const isMinorUpdate =
+      !isDateEqual(this._task.dueDate, update.dueDate) ||
+      isTaskRepeating(this._task) !== isTaskRepeating(update.repeating);
+
+    this._changeData(
+        UserAction.UPDATE_TASK,
+        isMinorUpdate ? UpdateType.MINOR : UpdateType.PATCH,
+        update
+    );
     this._replaceFormToCard();
   }
 
   _handleFavoriteClick() {
-    this._changeData(Object.assign({}, this._task, {isFavorite: !this._task.isFavorite}));
+    this._changeData(
+        UserAction.UPDATE_TASK,
+        UpdateType.MINOR,
+        Object.assign(
+            {},
+            this._task,
+            {
+              isFavorite: !this._task.isFavorite
+            }
+        )
+    );
   }
 
   _handleArchiveClick() {
-    this._changeData(Object.assign({}, this._task, {isArchive: !this._task.isArchive}));
+    this._changeData(
+        UserAction.UPDATE_TASK,
+        UpdateType.MINOR,
+        Object.assign(
+            {},
+            this._task,
+            {
+              isArchive: !this._task.isArchive
+            }
+        )
+    );
+  }
+
+  _handleDeleteClick(task) {
+    this._changeData(
+        UserAction.DELETE_TASK,
+        UpdateType.MINOR,
+        task
+    );
   }
 }
