@@ -29,4 +29,3 @@ document.querySelector(`#control__new-task`).addEventListener(`click`, (evt) => 
   evt.preventDefault();
   boardPresenter.createTask();
 });
-
