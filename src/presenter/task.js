@@ -2,7 +2,7 @@ import TaskView from "../view/task.js";
 import TaskEditView from "../view/task-edit.js";
 import {render, RenderPosition, replace, remove} from "../utils/render.js";
 import {UserAction, UpdateType} from '../const.js';
-import {isDateEqual, isTaskRepeating} from '../utils/task.js';
+import {isDatesEqual, isTaskRepeating} from '../utils/task.js';
 
 const Mode = {
   DEFAULT: `DEFAULT`,
@@ -97,7 +97,7 @@ export default class Task {
 
   _handleFormSubmit(update) {
     const isMinorUpdate =
-      !isDateEqual(this._task.dueDate, update.dueDate) ||
+      !isDatesEqual(this._task.dueDate, update.dueDate) ||
       isTaskRepeating(this._task) !== isTaskRepeating(update.repeating);
 
     this._changeData(
