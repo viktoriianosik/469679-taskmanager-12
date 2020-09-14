@@ -60,4 +60,3 @@ siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
 filterPresenter.init();
 boardPresenter.init();
 
-
